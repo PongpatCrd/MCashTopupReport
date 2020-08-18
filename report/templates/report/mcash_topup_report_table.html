@@ -1,0 +1,62 @@
+{% block content %}
+<script>
+  function status_value_to_word(element_id, val){
+    if(val == "completed"){
+      $(element_id).html("<span style='color: green;'><b>Complete</b></span>");
+    }
+    else if(val == "topup_failed"){
+      $(element_id).html("<span style='color: orange;'><b>Topup Failed</b></span>");
+    }
+    else if(val == "verify_failed"){
+      $(element_id).html("<span style='color: red;'><b>Verify Failed</b></span>");
+    }
+  }
+
+</script>
+
+{% if mcash_topup_report_datas %}
+<div class="table-responsive">
+  <table class="table table-sm table-hover small">
+    <thead>
+      <tr style="text-align: center;">
+        <th scope="col">#</th>
+        <th scope="col">Date</th>
+        <th scope="col">Card Number</th>
+        <th scope="col">Channel</th>
+        <th scope="col">Channel Trans No</th>
+        <th scope="col">Reference No</th>
+        <th scope="col">VISTA Trans No</th>
+        <th scope="col">VISTA VVMTrans No</th>
+        <th scope="col">Toup Amount</th>
+        <th scope="col">Topup Date</th>
+        <th scope="col">User</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for detail in mcash_topup_report_datas %}
+      <tr style="text-align: center;">
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ detail.ver_trans_date }}</td>
+        <td>{{ detail.ref_no1 }}</td>
+        <td>{{ detail.partner_name }}</td>
+        <td>{{ detail.source_tx_no }}</td>
+        <td>{{ detail.ref_no2 }}</td>
+        <td>{{ detail.vista_trans_no }}</td>
+        <td>{{ detail.vvm_trans_no }}</td>
+        <td>{{ detail.amount }}</td>
+        <td>{{ detail.top_trans_date }}</td>
+        <td>{{ detail.user }}</td>
+        <td id="status_{{ forloop.counter }}"></td>
+      </tr>
+      <script>status_value_to_word('#status_{{ forloop.counter }}', "{{ detail.status }}");</script>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div style="text-align: center; width: 100%;">
+<h5><b>Empty</b></h5>
+</div>
+{% endif %}
+{% endblock %}

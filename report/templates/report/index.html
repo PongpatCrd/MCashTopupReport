@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<title>Home</title>
+
+<div class="container-fulid" style="margin: 2em;">
+  <div class="row">
+    <div class="col">
+      {% if criteria_template == 'mcash_topup_report_criteria' %}
+      {% include 'report/mcash_topup_report_criteria.html' %}
+      {% endif %}
+    </div>
+  </div>
+
+  <hr style="width: 95%;">
+  <div class="row">
+    <div class="col">
+      {% if response_template == 'mcash_topup_report_table' %}
+      {% include 'report/mcash_topup_report_table.html' %}
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

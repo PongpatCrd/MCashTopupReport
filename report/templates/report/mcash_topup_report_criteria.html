@@ -1,0 +1,98 @@
+{% block content %}
+<form id="report_criteria" method="GET" action="{% url 'mcash_topup_report' %}">
+  <!-- <div class="form-inline">
+    <h6><b>Branch</b></h6> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <select id="criteria_branch_code" name="criteria_branch_code">
+      <option value="please_select" selected disabled>Please select</option>
+      {% for detail in tbl_branches %}
+      {% if detail.branchcodevista == current_criteria_data.criteria_branch_code %}
+        <option value="{{detail.branchcodevista}}" selected>{{ detail.branch_callname_plus }}</option>
+      {% else %}
+        <option value="{{detail.branchcodevista}}">{{ detail.branch_callname_plus }}</option>
+      {% endif %}
+      {% endfor %}
+    </select>
+    <script>make_select_search_able("#criteria_branch_code");</script>
+  </div> -->
+
+  <!-- <br> -->
+  <div class="form-inline">
+    <h6 class="required"><b>Start Date</b></h6> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="text" class="form-control required_field" id="criteria_start_date" name="criteria_start_date">
+
+    &nbsp;&nbsp; <h6 class="required"><b>End Date</b></h6> &nbsp;&nbsp;
+    <input type="text" class="form-control required_field" id="criteria_end_date" name="criteria_end_date">
+    <script>
+      make_input_to_datepicker("#criteria_start_date");
+      make_input_to_datepicker("#criteria_end_date");
+    </script>
+    {% if current_criteria_data.criteria_start_date and current_criteria_data.criteria_end_date %}
+    <script>
+      set_datepicker_value('#criteria_start_date', "{{current_criteria_data.criteria_start_date}}");
+      set_datepicker_value('#criteria_end_date', "{{current_criteria_data.criteria_end_date}}");
+    </script>
+    {% else %}
+    <script>
+      set_datepicker_value('#criteria_start_date', create_default_datepicker_value(7));
+      set_datepicker_value('#criteria_end_date', create_default_datepicker_value(0));
+    </script>
+    {% endif %}
+  </div>
+
+  <br>
+  <div class="form-inline">
+    <h6><b>Card Number</b></h6> &nbsp;&nbsp;
+    <input type="text" class="form-control" id="criteria_card_number" name="criteria_card_number" maxlength="16" oninput="this.value = this.value.replace(/[^0-9]/g, '').replace(/(\..*)\./g, '$1');" value="{{current_criteria_data.criteria_card_number}}"/>
+    &nbsp;&nbsp;
+    <select class="form-control" id="criteria_status" name="criteria_status">
+      <option value="all" selected>All</option>
+      {% if current_criteria_data.criteria_status == 'complete' %}
+      <option value="completed" selected>Completed</option>
+      {% else %}
+      <option value="completed">Completed</option>
+      {% endif %}
+      {% if current_criteria_data.criteria_status == 'vista_complete' %}
+      <option value="vista_completed" selected>VISTA Completed</option>
+      {% else %}
+      <option value="vista_completed">VISTA Completed</option>
+      {% endif %}
+      {% if current_criteria_data.criteria_status == 'topup_failed' %}
+      <option value="topup_failed" selected>Topup Failed</option>
+      {% else %}
+      <option value="topup_failed">Topup Failed</option>
+      {% endif %}
+    </select>
+  </div>
+
+  <br>
+  <button id="submit_btn" type="button" class="btn btn-info form-control btn-sm" id="search_btn"><i class="fas fa-search"></i> <b>Search</b></button>
+</form>
+
+<script>
+  function check_required_field(){
+    let is_fill_all = true;
+    for(var i=0; i<$(".required_field").length ;i++){
+      let temp_val = $(".required_field")[i].value;
+      
+      if(temp_val == ''){
+        return false;
+      }
+    }
+    return true;
+  }
+
+  $("#report_criteria").on('submit', function(){
+    loading_screen(true);
+  });
+
+  $("#submit_btn").on('click', function(){
+    let required_field_complete = check_required_field();
+    if(required_field_complete){
+      $("#report_criteria").submit();
+    }
+    else{
+      alert_status_modal('Please fill in all required field', false);
+    }
+  })
+</script>
+{% endblock %}
